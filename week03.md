@@ -199,3 +199,78 @@ files inside do not show up. This is a shadow directory.
 
 `ls -W` shows whiteout files
 `S_ISWHT(st_mode)`
+
+---
+
+Checkin:
+
+Identify a struct stat member not listed in the slides/videos:
+- NetBSD extensions include st_gen, the file/inode generation number.
+
+Identify three setuid executables on your system.
+What do they do, and why do they need to be setuid?
+
+After using the following command:
+`find /bin /usr/bin /sbin /usr/sbin -perm -04000`
+
+I picked the following 3:
+/bin/rcmd - the only one in /bin for me.
+From the NetBSD manpage:
+    rcmd executes command on host.
+
+    rcmd copies its standard input to the remote command, the standard output
+    of the remote command to its standard output, and the standard error of
+    the remote command to its standard error.
+
+I found in the OpenBSD manpage that it needs to be suid because it needs to use
+reserved ports, which regular users lack permission to use.
+
+/usr/sbin/traceroute
+From the manpage:
+    The Internet is a large and complex aggregation of network hardware,
+    connected together by gateways.  Tracking the route one's packets
+    follow (or finding the miscreant gateway that's discarding your
+    packets) can be difficult.  Traceroute uses the IP protocol `time to
+    live' field and attempts to elicit an ICMP TIME_EXCEEDED response from
+    each gateway along the path to some host.
+
+    The only mandatory parameter is the destination host name or IP number.
+    The default probe datagram length is 40 bytes, but this may be
+    increased by specifying a packet length (in bytes) after the
+    destination host name.
+
+For a similar reason to ping, traceroute needs the suid bit. It uses the ICMP
+packets.
+
+/usr/bin/crontab
+From the manpage:
+    crontab is the program used to install, deinstall, or list the tables
+    used to drive the cron(8) daemon in ISC Cron.  Each user can have their
+    own crontab, and though these are files in /var/cron, they are not
+    intended to be edited directly.
+
+Because the cron job files are owned by root, crontab needs the suid to allow
+regular users to add jobs.
+
+I noticed a lot of the binaries listed by the find command I used are networking
+related.
+
+Consider the following file and directory information:
+
+    $ ls -ld . file
+    drwx-w-r-x  2 alice  apue  48 Sep 11 02:57 .
+    --wx--s--x  1 alice  apue   4 Sep 11 02:57 file
+    $
+
+Which users can copy the file? Which can remove it?
+- alice cannot copy because user/owner read perms are off. alice can create a
+  new file in the directory though.
+- no one in the group apue can open it either because group read perms are off.
+- others can't copy because read perms are off.
+- root can, because perms don't matter when you're root.
+
+Most Unix systems don't allow a non-root user to chown files.
+Why not?
+- If you allow non-root users to chown files, you allow them to accidentally
+  make files inaccessible to themselves.
+
