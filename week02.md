@@ -333,4 +333,86 @@ Questions:
 
 Can we go over O_SYNC and fcntl(2) again?
 
+- Remember basic I/O is on file descriptors.
+- fcntl set the file status flags.
+- sync means the writes all immediately go to disk
+- usually kernel is efficient by being lazy.
+
+---
+
+OPEN_MAX = 128 can be a lower limit for the actual max number of open files.
+
+You cannot raise the limit. Only the superuser can raise the limit!
+
+`ls -s` - num blocks.
+
+What are sparse files for?
+- sparse files are used in databases, os images, etc.
+
+To detect if a file is a sparse file, just ask the fs the number of blocks
+being used.
+
+vnodes are implemented in most UNIX systems.
+
+File locking mechanisms aren't easy and light to implement. UNIX by default doesn't
+implement locking mechanisms.
+
+time:
+- wall clock
+- user space time
+- kernel space time
+Actual I/O does not get kept track of in kernel or user space.
+
+for synchronous I/O the time for I/O adds up to the wall clock time.
+
+Try SYNC on pipes from either side or both.
+
+GNU du(1) and NetBSD du(1) give different numbers.
+- It actually depends on different filesystem.
+
+C standards
+- gets() is deprecated since c99 (you just get a warning)
+
+There are resource limits because our computers don't have infinite resources.
+
+why does bash implement /dev/tcp?
+- it's an interface for a TCP socket. it makes it easy to write to a port.
+- can be used in malware and setting up a reverse shell.
+- you can implement a web server in just shell.
+
+security of sparse files
+- not sure of any direct security flaws
+
+Is EOF automatically added to the end of files?
+- files don't have to end in newline. it is only UNIX convention.
+- EOF is defined as some special value when you reach the end of the file. or by the terminal driver with ^D.
+
+Everything is a file
+- we covered the 5 basic syscalls. they work on most things. even dirs are files that map inodes to names.
+fifo, sockets, char devs, block devs.
+- NOT COMPLETELY TRUE because some shells implement pipes as sockets.
+
+Sockets
+- UNIX domain - doesn't go through the tcp or udp stack but it still has the same api.
+- network domain
+
+Plan 9 OS - rob pike
+- took everything is a file much further. window system uses file i/o.
+
+O_EVTONLY means I don't want to be bothered to do I/O when there's nothing there. Only react to events.
+O_DIRECT write to fs without using buffer cache. Linux has this
+O_NOATIME don't touch the last access time.
+O_TMPFILE create a temporary file that only one process has access to. create dir, create file, open, unlink file.
+- the flag guarantees the operations are done in one atomic step.
+O_ASYNC async io.
+O_REGULAR must open a regular file. instead of calling stat to check if it's regular then calling open, this does it atomically.
+O_SHLOCK atomically acquire a shared lock.
+O_VERIFY kernel will verify the file before it's open. used for the runtime linker. verification is implementation specific.
+
+---
+
+for homework:
+we get a test script and we should always consider "what can go wrong?"
+
+
 
