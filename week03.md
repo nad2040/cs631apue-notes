@@ -207,6 +207,9 @@ Checkin:
 Identify a struct stat member not listed in the slides/videos:
 - NetBSD extensions include st_gen, the file/inode generation number.
 
+- I'm not sure what it could tell you about your filesystem. Maybe whether
+  files have been deleted or not?
+
 Identify three setuid executables on your system.
 What do they do, and why do they need to be setuid?
 
@@ -269,8 +272,95 @@ Which users can copy the file? Which can remove it?
 - others can't copy because read perms are off.
 - root can, because perms don't matter when you're root.
 
+- actually alice can read it after changing the permissions.
+
+- alice can remove the file because x and w on the directory
+- root can remove the file because root
+- group cannot but it can add execute permissions and then rm
+- other cannot.
+
 Most Unix systems don't allow a non-root user to chown files.
 Why not?
 - If you allow non-root users to chown files, you allow them to accidentally
   make files inaccessible to themselves.
+
+---
+
+Raw disks
+
+/dev/rwd1a = trying to be westerndigital (wd)
+
+/dev/c0l1s2p3
+
+/dev/ld4a and /dev/rld4a
+- rld4a is a char device while the first one is block device.
+
+- with the r, you're telling the kernel, you know you're going to the disk directly.
+
+- else you go through the kernel interface.
+
+- to copy a disk directly, copy from raw disk
+
+---
+
+the stat output and ls output uses the names of the ids, from /etc/passwd. Thus that file has to be readable.
+
+Why does /etc/passwd have multiple poeple with uid 0?
+
+Convention is "root" has uid 0.
+
+/rescue/sh is statically linked so you can still do stuff if you accidentally rm'd
+your libc.
+
+uids don't have any semantic meaning by default, but some systems have conventions
+for system accounts.
+
+It used to be the case that the password hashes were stored in /etc/passwd. BAD IDEA.
+
+on bsd: `sudo cat /etc/master.passwd`
+
+---
+
+when we operate on raw network sockets, we need root privileges.
+
+On Linux ping isn't setuid because of restricting other privileges.
+
+---
+
+To try to access a file, by default you use effective uid gid. You don't want to
+drop privileges and raise privileges or stat the file.
+
+Access with real uid and gid solves the problem atomically.
+
+---
+
+fsck() allows you to check if you rm'd data by accident.
+Generally data is still there, but just unlinked.
+
+---
+
+permissions nowadays ACLs (Access Control Lists)
+
+---
+
+Please start using const for functions to introduce the invariants to the compiler.
+
+---
+
+tmp dir has sticky bit. sticky bit changes the semantics on who can remove.
+
+only owner or root can actually delete files?
+
+you can be abused through a symlink attack.
+
+---
+
+how are suid and sgid useful without execute permissions? It is not generally useful. Some systems decided to overload
+this functionality. On some Linux distros, it does "mandatory locking".
+
+---
+
+st_rmode gets us the permission string.
+for ls, just pretend ls -1
+
 
