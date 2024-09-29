@@ -362,6 +362,49 @@ no tzinfo. ZULU time stands for UTC...
 `ssize_t strftime(char * restrict buf, size_t maxsize, const char * restrict format, const struct tm * restrict timeptr);`
 
 
+---
 
+Checkpoint:
+
+Briefly describe the difference between a hard link and a symlink.
+- A hardlink is just another mapping in a directory to an inode.
+- A symlink is a file with the sole contents being a path to access.
+
+Create a directory and change into it. Then remove the directory from a different terminal session.
+What happens when you then run e.g., ls -la or touch file from the first terminal? Why?
+
+```
+apue% ls -la
+ls: .: No such file or directory
+apue% touch file
+touch: file: No such file or directory
+```
+
+- The directory gets removed but the process' cwd is still set to the correct path.
+  It tries to read the current dir '.' and fails because it is removed.
+
+What's the difference between /etc/passwd and /etc/master.passwd?
+
+- /etc/passwd is meant for all users to read, storing username, uid, gid, login
+  shell/process, initial working dir and gecos.
+- /etc/master.passwd stores the hashes. and is only readable by root.
+- Both are only writable by root, so you need the setuid binary as normal users
+  so your euid can become root.
+
+Suppose you forgot your password, but have access to your password hash,
+e.g., '$sha1$23812$mrnfA20a$K5UKbcAnLTlBDOszhYsruk8WOVOg'.
+How do you get back your password?
+
+- If you used an insecure/commonly used password and the system doesn't salt
+  hashes, try rainbow tables.
+- If you used a complex and secure password, you're out of luck. Just reset it.
+
+Which element in the `struct stat` describes the file creation time?
+- st_birthtime (time of inode creation)
+
+Find out whether there will be a leap second at the end of this year.
+- No leap second. https://datacenter.iers.org/data/latestVersion/bulletinC.txt
+
+Questions:
 
 
