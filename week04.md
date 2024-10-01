@@ -407,4 +407,58 @@ Find out whether there will be a leap second at the end of this year.
 
 Questions:
 
+Are there other executables like id(1) and groups(1) that are hard links
+of each other?
+- yes see commands at end of file
+
+Also, are there other pointless executables required by POSIX, like cd,
+where shells need to implement it as a builtin instead of forking and
+running a separate program?
+
+Really specific: Why is it 4-byte alignment in the directory structure? I guess
+it's implementation specific?
+- probably related to the size of inode datatype.
+
+---
+
+The too many levels of symlinks error will still trigger if there is no loop because
+it could just be too long.
+
+Some FSes have fast symlinks and slow symlinks. Fast symlinks avoid going to the disk
+every time.
+
+Superblock is really important
+Each cylinder group has its own copy of the super block.
+Losing an inode map will lose makes you lose where every file is on the inode blocks.
+
+initramfs - create a temporary FS on RAM without disks.
+
+FUSE (fs in userspace)
+
+TLS1.3 0-RTT
+SSH requires full handshake and the key agreement.
+
+`newgrp(1)` changes you to a new group and might require a password.
+
+The * in the password field means there's some password. No shadow file equivalent
+for groups.
+
+---
+
+POSIX standard for disk management? Not really. Hardware isn't too standardized.
+
+unlink is the only syscall that is used to delete files. remove() is an alias.
+
+POSIX claims you need a cd command.
+
+Are there other commands like id(1) and groups(1)? Yes
+`ls -li /**/bin | sort -n | awk ' _[$1]++' | more`
+_ is just an identifier/var name
+Autovivification
+
+`awk 'if (!lines[$0]) { line++; print }'`
+
+fts(3) has an option to give you back the struct stat, so you don't need to read
+the type of file in the directory structure.
+
 
