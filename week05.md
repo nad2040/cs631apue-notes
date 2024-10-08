@@ -222,10 +222,51 @@ Then we reset the second char of `argv[0]` to be `/` so we can read `./a.out/moo
 
 Interestingly, when doing this in gdb, the full path of the executable was expanded.
 
-Other questions:
-
-
-
 ---
+
+question about file types in ls manpage
+
+What is archive state 1 and 2?
+- have to do with backups. filesystem specific.
+
+for ls:
+- if older than 6 months, print time with year instead of time. no hard rules about it.
+- BLOCKSIZE needs to be correct type. Check the values of getenv(). Also calculate it manually.
+
+- handle the weird filenames.
+
+- let the printing happen naturallly and only handle the -q -w flags.
+
+for gdb tui mode, press ctrl l to clean up screen when printing values
+
+ld.elf_so - runtime link-editer (linker)
+- statically linked executables won't need ld.elf_so
+
+make has the advantage of a dependency graph.
+@ in makefile means run shell code.
+we have shell commands, expansions, and other things that differ across bmake, gmake, etc.
+
+Interpreter ld64 in the `file` output.
+
+`ldd a.out` to show the dynamically linked libraries. Interpreter is for the library linking.
+
+binutils
+`objdump -x`
+`readelf`
+to read the binaries and get info about them.
+
+glibc vs muslc
+- glibc only works on gnu systems
+- embedded systems (might be more license friendly)
+
+sed and ed are similar.
+
+`diff -u` prints diff in unified format (git default).
+
+`diff -e` prints diff in ed format. so you can pipe to ed to change the file.
+
+`patch` apply a diff to a file. smart.
+
+`cvs` requires individuals to talk to a central server.
 
 
