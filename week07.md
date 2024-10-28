@@ -194,3 +194,28 @@ What do you observe? Do they behave differently?
   I'll consult the manpage at some point.
 
 Please note any particular (sub)topics or aspects of this week's materials that you would like me to revisit in class:
+
+---
+
+rc is run configuration.
+
+/etc/rc.d
+
+init reads /etc/ttys to determine which terminal to use.
+
+getty gets the actual terminal.
+
+pluggable auth module (PAM)
+
+ldap sends hash over the wire
+with ldap you likely use kerberos
+
+/etc/gettytab shows the types of terminals you can talk to.
+
+SIGWINCH - resized terminal window
+
+user can only send a signal to a process owned by user.
+except signal 0 to check if the pid is valid.
+
+
+
