@@ -218,3 +218,85 @@ popen(3) makes it easy to set up IPC with a new process. What is a risk in using
 - It allows you to pass any arbitrary shell code to the /bin/sh interpreter.
   This arbitrary code could be set to anything and it won't be checked, so you
   could remove all your files.
+
+---
+
+Is directory creation atomic in POSIX
+
+Some system daemons use pid files to assume whether they are running.
+
+For temporary files, use a temp directory and then put files in there.
+Recommend against temporary files.
+
+pub-sub (publication and subscription)
+- producer-consumer
+
+Networking
+Socket
+Async I/O
+Queueing
+Distribution
+Load Balancing
+
+If you happen to be the sysadmin for a school for cs students, you need to clean up your
+IPC.
+
+By logical design we probably just want to reuse semaphore then we will remove it.
+
+2001-2006 Stevens sysadmin. we had a CS pubnix.
+
+been 4-5 years since the last pubnix.
+
+We used to have a HPC with 65 machines...
+
+Shared memory persists across muliple process lifetimes.
+
+msg struct data field max isn't 512.
+MSGMAX is the system limit for the body.
+
+The high priority can break if you aren't busy looping.
+
+
+Why does init not log to dmesg?
+- dmesg is the kernel buffer.
+- syslog can be used to send logs to dmesg buffer but since init is a shell script runner,
+  those things don't really go to kernel buffer.
+- systemd is a different beast. it is different from rc and init.
+
+Diff between reentrant, thread-safe, async-signal-safe?
+`man 7`
+- async-signal-safe - safe to resume wherever they are.
+- thread-safe - coordinate between threads using concurrency primitives.
+
+Why does SIGWINCH exist if there isn't even a window manager?
+- it was added in BSD 4.3 about 1986. X window system was created around 84/85.
+  Diff UNIX versions may or may not come with a window manager.
+
+Are message queues full-duplex?
+- This concept doesn't really apply.
+
+Since the pipe is shell-specific, it can be implemented in any way.
+
+Async network communication coming up!
+
+What is __DARWIN_UNIX03 for?
+- on macOS, `union semun` is defined.
+
+System V said the IPC should be OS-specific.
+
+How does shmdemo work?
+kernel details...
+
+don't choose popen because you can easily hijack environment variables.
+
+One way to avoid popenve is to use posix_spawn.
+
+shquote will format the strings to make it safe for your shell
+
+
+
+linux really only uses posix ipc nowadays.
+
+can be observed using lsof and lsipc.
+
+
