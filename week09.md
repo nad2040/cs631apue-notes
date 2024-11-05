@@ -208,3 +208,102 @@ How does streamread.c handle multiple simultaneous connections?
 
 - It seems that stream read only handles (reads from) one connection at a time. When the connection stops,
   the next one in the backlog gets handled.
+
+---
+
+Only for local domain we create file in filesystem.
+
+on socketpair, you cannot just write to the file.
+
+Create signal handlers to catch signals and clear the socket pair.
+
+"Address already in use" Is likely to cause confusion.
+
+postfix daemon might use local domain sockets.
+
+bind allows you to name an unnamed socket.
+
+sockaddr_in - Internet domain
+sockaddr_un - UNIX domain
+
+bind with INADDR_ANY allows any connections
+name.sin_addr.s_addr
+
+port = 0 -> ephemeral port >= 1024
+port < 1024, reserved well-known ports
+
+check /etc/services for known ports
+
+you can only use a port number if it's free.
+
+netstat shows state for tcp and nothing for udp. udp is stateless.
+
+`/etc/nsswitch.conf`
+name-service switch configuration file
+
+first look at files, etc, the finally look go to DNS server.
+
+Things get funky if your system doesn't define localhost as 127.0.0.1 or ::1.
+
+`host` and `dig` are DNS lookups.
+
+`ping` calls gethostbyname. this then looks at nsswitch.conf.
+
+don't mess will your /etc/hosts!!!
+
+traceroute iteratively uses shorter and shorter time-to-live to get the full path from
+you to an ip.
+
+STREAM socket require a separate socket to listen for incoming connections.
+
+I/O multiplexing (keep track of multiple fds at the same time)
+
+Source Addr/Port, Dest Addr/Port uniquely determines a connection.
+
+Is SOCK_STREAM = TCP and SOCK_DGRAM = UDP?
+
+SOCK_STREAM and SOCK_DGRAM are pretty much equivalent to TCP and UDP.
+There are exceptions but those are rare.
+
+QUIC is built on UDP and datagrams.
+
+SCSP is a stream protocol.
+
+When do we use raw sockets?
+- ICMP, ARP, etc. you need superuser.
+- tools that use raw sockets use set-uid.
+
+tcpdump opens an interface in promiscuous mode. This is different from
+a socket.
+
+Broadcast address is the highest IP in the subnet. INADDR_ANY means bind to
+any address.
+
+Broadcast will send to any machine on the network. if they respond, then you
+get the response.
+
+How to do a UDP port scan?
+- you don't get a response. sometimes you won't get an ICMP host-unreachable.
+
+With TCP, you either get SYN-ACK, RESET or nothing.
+
+How does IPv6 work?
+- not too different from IPv4.
+
+don't need conversion from host to network order for IPv6, because it will
+always be in the correct order.
+
+FD_SETSIZE is the limit of the fd sets.
+
+---
+
+sws
+
+CGIs (Common Gateway Interface) - interactive websites done by fork.
+
+Directory Indexing - display contents when index.html doesn't exist.
+
+`/usr/libexec/httpd -b -I 8080 -X -u -p sws -c cgi-bin docroot`
+
+
+
