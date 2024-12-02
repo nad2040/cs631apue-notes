@@ -95,6 +95,8 @@ decrement the link count and thus needs to modify the file.
 
 can be set on directories. in this case you can modify files, but not remove or rename
 
+also see `chflags(1)`
+
 ## mount -o
 
 `sudo mount -u -o nosuid /mnt`
@@ -297,4 +299,118 @@ Containers
 
 cgroups and namespaces form the basis of many container technologies: CoreOS, LXC, Docker.
 
+---
 
+Checkpoint:
+
+On a Linux system create a file that has:
+
+    read permissions for one regular user
+    read and write permissions for a different regular user
+    execute permissions for all members of a different group
+
+Show the resulting permissions here by running ls -l file and getfacl file:
+
+```
+dliu@debian:~/test$ ls -l file
+-rw-rwx---+ 1 dliu dliu 38 Dec  1 22:16 file
+dliu@debian:~/test$ getfacl file
+# file: file
+# owner: dliu
+# group: dliu
+user::rw-
+user:testuser:r--
+user:testuser2:rw-
+group::---
+group:testgroup:--x
+mask::rwx
+other::---
+```
+
+On your NetBSD VM, use file flags to mark a file as system-immutable, then verify that the owner cannot write
+to the file, remove the file, nor change any of the file's attributes. Show your commands here:
+
+```
+apue% echo "chflags test file" > file
+apue% ls
+file
+apue% sudo chflags schg file
+Password:
+apue% ls -l
+total 4
+-rw-r--r--  1 dliu  users  18 Dec  2 04:15 file
+apue% echo test >> file
+zsh: operation not permitted: file
+apue% rm file
+override rw-r--r--  dliu:users for 'file'?
+apue% ls
+file
+apue% rm file
+override rw-r--r--  dliu:users for 'file'? y
+rm: file: Operation not permitted
+apue% touch file
+touch: file: Operation not permitted
+apue% chmod +x file
+chmod: file: Operation not permitted
+```
+
+How would you use the chroot(1) command to run your 'sws' web server?
+What would doing that mean for ~user and CGI directories?
+
+```
+I would use the chroot command on the doc root to prevent path traversal.
+
+This would mean the user directories and cgi-bin directories need to
+be linked into the chroot.
+```
+
+Create a resource-intensive command, then use nice(1) to run simultaneous invocations with different priorities.
+Repeat the same on both NetBSD and Linux and describe any differences:
+
+```
+I just did nice -n [0,10,20] yes [a,b,c].
+
+On NetBSD, I notice only the nice 20 process has significantly less
+cpu time than the other two. The nice 10 and nice 0 are only a few
+seconds apart in terms of CPU time vs the nice 20 process being over
+3 minutes behind when the other processes hit 5 minutes CPU time.
+
+On Debian arm64, it seems that nice 0 gets twice the cpu time as nice
+10 and nice 10 gets twice the cpu time as nice 19 (I did -n 20, but
+it appears as 19 in top).
+```
+
+Use VirtualBox / UTM to add CPUs to your NetBSD VM, then use the schedctl(8) command to place different jobs or processes on different CPUs.
+If a process P on CPU1 creates a child process C and you move P to CPU2, what happens to C?
+
+```
+I set affinity for shell process to CPU 0
+
+sudo schedctl -A 0 -p $$
+  LID:              1447
+  Priority:         43
+  Class:            SCHED_OTHER
+  Affinity (CPUs):  0
+
+Started dd
+
+dd if=/dev/zero of=/dev/null &
+
+Set affinity for shell process to CPU 1
+
+sudo schedctl -A 1 -p $$
+  LID:              1447
+  Priority:         43
+  Class:            SCHED_OTHER
+  Affinity (CPUs):  1
+
+In top, I saw the dd process remain on CPU 0.
+It didn't seem to switch to other CPUs.
+```
+
+---
+
+Questions:
+
+Do hardlinks work after chrooting?
+I'm guessing this is true and I'll test it later.
