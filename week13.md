@@ -414,3 +414,16 @@ Questions:
 
 Do hardlinks work after chrooting?
 I'm guessing this is true and I'll test it later.
+
+Out of band network
+- separate from regular internet.
+- often serial ports.
+- systems often have world-facing, management, etc interfaces.
+
+
+Try out:
+- dlopen after chroot
+- Keeping fd open from before chroot and see if you still
+  have access
+
+
